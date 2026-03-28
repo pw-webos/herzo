@@ -1332,12 +1332,12 @@ function renderLog() {
   el.appendChild(exportBtn);
 
   DAYS.forEach((day, di) => {
-    const anyDone = day.batches.some((_, bi) => state.batchDone[\`d\${di}_b\${bi}\`]);
+    const anyDone = day.batches.some((_, bi) => state.batchDone[`d\${di}_b\${bi}`]);
     if (!anyDone) return;
 
-    const devlog = state.devlogs && state.devlogs[\`d\${di}\`];
-    const thankyou = state.thankyous && state.thankyous[\`d\${di}\`];
-    const hygiene = state.hygieneLog && state.hygieneLog[\`d\${di}\`];
+    const devlog = state.devlogs && state.devlogs[`d\${di}`];
+    const thankyou = state.thankyous && state.thankyous[`d\${di}`];
+    const hygiene = state.hygieneLog && state.hygieneLog[`d\${di}`];
     const dayXP = (() => {
       let x = 0;
       day.batches.forEach((_, bi) => { x += calcBatchXP(di, bi); });
@@ -1365,8 +1365,7 @@ function renderLog() {
     if (devlog && devlog.trim()) {
       bodyHTML += `<div style="margin-bottom:10px">
         <div style="font-size:10px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Dev-Log</div>
-        <div style="font-size:13px;color:var(--text);line-height:1.6;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 12px">${devlog.replace(/
-/g, '<br>')}</div>
+        <div style="font-size:13px;color:var(--text);line-height:1.6;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 12px">${devlog.split('\n').join('<br>')}</div>
       </div>`;
     } else {
       bodyHTML += `<div style="font-size:12px;color:var(--text3);margin-bottom:10px;font-style:italic">No dev-log entry for this day.</div>`;
@@ -1383,9 +1382,9 @@ function renderLog() {
     // Batch summary
     bodyHTML += `<div style="display:flex;gap:6px;flex-wrap:wrap">`;
     day.batches.forEach((batch, bi) => {
-      const done = state.batchDone[\`d\${di}_b\${bi}\`];
-      const focusLost = state.focusLost[(\`d\${di}_b\${bi}\`).replace('_b','_b')];
-      const tKey = \`d\${di}_b\${bi}\`;
+      const done = state.batchDone[`d\${di}_b\${bi}`];
+      const focusLost = state.focusLost[(`d\${di}_b\${bi}`).replace('_b','_b')];
+      const tKey = `d\${di}_b\${bi}`;
       const fl = state.focusLost && state.focusLost[tKey];
       bodyHTML += `<div style="font-size:11px;padding:3px 8px;border-radius:8px;background:${done ? (fl ? 'rgba(240,160,48,0.12)' : 'rgba(52,212,160,0.12)') : 'var(--bg4)'};color:${done ? (fl ? 'var(--amber)' : 'var(--teal)') : 'var(--text3)'}">
         ${batch.icon} ${done ? (fl ? 'Done (focus lost)' : 'Done ✓') : 'Skipped'}
@@ -1419,20 +1418,20 @@ function exportLog() {
   text += '='.repeat(40) + '\n\n';
 
   DAYS.forEach((day, di) => {
-    const anyDone = day.batches.some((_, bi) => state.batchDone[\`d\${di}_b\${bi}\`]);
+    const anyDone = day.batches.some((_, bi) => state.batchDone[`d\${di}_b\${bi}`]);
     if (!anyDone) return;
-    text += \`DAY \${day.num} — \${day.title}\n\`;
+    text += `DAY \${day.num} — \${day.title}\n`;
     text += '-'.repeat(30) + '\n';
-    const devlog = state.devlogs && state.devlogs[\`d\${di}\`];
-    if (devlog) text += \`Dev-Log:\n\${devlog}\n\n\`;
-    const ty = state.thankyous && state.thankyous[\`d\${di}\`];
-    if (ty) text += \`Thank you:\n\${ty}\n\n\`;
+    const devlog = state.devlogs && state.devlogs[`d\${di}`];
+    if (devlog) text += `Dev-Log:\n\${devlog}\n\n`;
+    const ty = state.thankyous && state.thankyous[`d\${di}`];
+    if (ty) text += `Thank you:\n\${ty}\n\n`;
     text += '\n';
   });
 
   const xp = recalcTotalXP();
-  text += \`=\`.repeat(40) + '\n';
-  text += \`Total XP: \${xp} · €\${(xp/100).toFixed(2)} earned\n\`;
+  text += `=`.repeat(40) + '\n';
+  text += `Total XP: \${xp} · €\${(xp/100).toFixed(2)} earned\n`;
 
   const blob = new Blob([text], { type: 'text/plain' });
   const a = document.createElement('a');
